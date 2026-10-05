@@ -61,15 +61,12 @@ export const makeClaudeContinuationGroupKey = Effect.fn("makeClaudeContinuationG
   ): Effect.fn.Return<string, never, FileSystem.FileSystem | Path.Path> {
     const fileSystem = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
-    const resolvedHomePath = yield* resolveClaudeHomePath(config, environment);
-    // Auth-overlay homes symlink `projects` into a shared home and resume its transcripts.
-    const transcriptsHome = yield* fileSystem
-      .realPath(path.join(resolvedHomePath, "projects"))
-      .pipe(
-        Effect.map(path.dirname),
-        Effect.orElseSucceed(() => resolvedHomePath),
-      );
-    return `claude:home:${transcriptsHome}`;
+    const projectsPath = path.join(yield* resolveClaudeHomePath(config, environment), "projects");
+    // Auth-overlay homes symlink `projects` to a shared store and resume its transcripts.
+    const transcriptsPath = yield* fileSystem
+      .realPath(projectsPath)
+      .pipe(Effect.orElseSucceed(() => projectsPath));
+    return `claude:projects:${transcriptsPath}`;
   },
 );
 

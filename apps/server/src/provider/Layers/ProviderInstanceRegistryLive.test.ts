@@ -796,7 +796,7 @@ describe("ProviderInstanceRegistryLive — all drivers slice", () => {
       expect(claudeSnapshot.driver).toBe(claudeDriverKind);
       expect(claudeSnapshot.enabled).toBe(false);
       expect(claudeSnapshot.continuation?.groupKey).toBe(
-        `claude:home:${(yield* Path.Path).resolve("/home/julius/.claude-work")}`,
+        `claude:projects:${(yield* Path.Path).resolve("/home/julius/.claude-work/projects")}`,
       );
 
       const cursorSnapshot = yield* cursor!.snapshot.getSnapshot;
